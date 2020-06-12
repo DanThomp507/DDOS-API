@@ -1,7 +1,9 @@
 from models import Accesslog
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+
+import json
 
 
 app = Flask(__name__)
@@ -19,12 +21,9 @@ def hello():
 
 @app.route('/all', methods=['GET'])
 def handle_logs():
-        query = """
-        SELECT * FROM accesslog;
-        """
-        print(query)
-        return query
-
+        result = db.engine.execute('select * from accesslog;')
+        print(result)
+        return jsonify({'result': [dict(row) for row in result]})
 
 if __name__ == '__main__':
     app.run()
